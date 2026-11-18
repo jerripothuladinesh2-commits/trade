@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ChartSense – Vision Technical Analyst</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#14171c;--mut:#5d6675;--line:#dde1e8;--acc:#2457d6;--buy:#0e8a4f;--sell:#c62f3a;--wait:#b7791f;--buyb:#e3f6ec;--sellb:#fbe6e8;--waitb:#fbf0dc;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1116;--card:#171b22;--ink:#e8ebf0;--mut:#9aa4b4;--line:#2a313c;--acc:#6b93ff;--buy:#3ccf89;--sell:#ff6b75;--wait:#f0b44c;--buyb:#10301f;--sellb:#3a1519;--waitb:#33280f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1116;--card:#171b22;--ink:#e8ebf0;--mut:#9aa4b4;--line:#2a313c;--acc:#6b93ff;--buy:#3ccf89;--sell:#ff6b75;--wait:#f0b44c;--buyb:#10301f;--sellb:#3a1519;--waitb:#33280f;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:22px;margin:0 0 2px}p.sub{margin:0 0 18px;color:var(--mut)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:0 0 10px}
+label{display:block;font-size:12px;color:var(--mut);margin:0 0 3px}
+input,select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--mut);cursor:pointer}
+.drop.on{border-color:var(--acc);color:var(--acc)}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.th{position:relative;width:96px;height:68px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.th img{width:100%;height:100%;object-fit:cover}
+.th button{position:absolute;top:2px;right:2px;border:0;border-radius:50%;width:20px;height:20px;background:#000a;color:#fff;cursor:pointer;line-height:1}
+.btn{width:100%;padding:12px;border:0;border-radius:10px;background:var(--acc);color:#fff;font:600 15px inherit;font-family:inherit;cursor:pointer}
+.btn:disabled{opacity:.5;cursor:not-allowed}.btn.sec{background:transparent;color:var(--acc);border:1px solid var(--line);width:auto;padding:6px 12px;font-size:13px}
+.chk{display:flex;gap:8px;align-items:center;margin:4px 0 12px;font-size:14px}.chk input{width:auto}
+.badge{display:inline-block;padding:6px 16px;border-radius:999px;font-weight:700;font-size:20px;letter-spacing:.04em}
+.BUY{background:var(--buyb);color:var(--buy)}.SELL{background:var(--sellb);color:var(--sell)}.WAIT{background:var(--waitb);color:var(--wait)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.kv div{background:var(--bg);border-radius:8px;padding:8px 10px}.kv b{display:block;font-size:11px;color:var(--mut);font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+.kv span{font-weight:600;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;margin:2px 4px 2px 0;padding:2px 9px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-size:13px}
+.flag{border-left:3px solid var(--wait);background:var(--waitb);padding:8px 10px;margin:6px 0;border-radius:0 8px 8px 0;font-size:13px}
+.err{border-left:3px solid var(--sell);background:var(--sellb);padding:10px;border-radius:0 8px 8px 0}
+.mut{color:var(--mut);font-size:13px}pre{overflow-x:auto;background:var(--bg);padding:10px;border-radius:8px;font-size:12px}
+.lad{position:relative;height:auto}.lvl{display:flex;justify-content:space-between;padding:5px 10px;border-radius:6px;margin:3px 0;font-variant-numeric:tabular-nums;font-size:14px}
+.lvl.r{background:var(--sellb);color:var(--sell)}.lvl.s{background:var(--buyb);color:var(--buy)}.lvl.e{background:var(--bg);border:1px solid var(--acc);color:var(--acc);font-weight:600}.lvl.p{background:var(--bg);color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>ChartSense</h1>
+<p class="sub">Upload chart screenshots. Get a structured, risk-checked trade plan. Educational analysis, not financial advice.</p>
+<div class="grid">
+<div>
+<div class="card"><h2>1 · Charts</h2>
+<div class="drop" id="drop">Drop, paste or tap to add screenshots<br><span class="mut">Multiple timeframes of the same instrument work best</span></div>
+<input type="file" id="file" accept="image/*" multiple hidden>
+<div class="thumbs" id="thumbs"></div></div>
+<div class="card"><h2>2 · Context</h2>
+<div class="row"><div><label>Capital</label><input id="cap" type="number" min="0" placeholder="e.g. 100000"></div>
+<div><label>Currency</label><select id="cur"><option>₹</option><option>$</option><option>€</option><option>£</option></select></div></div>
+<div class="row"><div><label>Risk per trade (%)</label><input id="risk" type="number" step="0.1" min="0.1" max="10" value="1"></div>
+<div><label>Style</label><select id="style"><option>Scalping</option><option selected>Intraday</option><option>Swing</option></select></div></div>
+<div class="row"><div><label>Sector</label><select id="sector"><option>Equities</option><option>Forex</option><option>Crypto</option><option>Commodities</option><option>Derivatives</option></select></div>
+<div><label>Timeframe (optional)</label><input id="tf" placeholder="e.g. 15m"></div></div>
+<label class="chk"><input type="checkbox" id="opt"> Include options strategy</label>
+<button class="btn" id="go" disabled>Analyze charts</button>
+<p class="mut" id="msg" style="margin:8px 0 0"></p></div>
+</div>
+<div id="out"><div class="card mut">Results appear here. The decision is re-validated in your browser: stop and target geometry, minimum 1:1.5 reward-to-risk, and position size are recomputed independently of the model.</div></div>
+</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const files=[];let sample=null;
+const SYS=`You are an expert institutional technical analyst and risk manager. Analyze the attached chart screenshots (possibly multiple timeframes of one instrument).
+RULES:
+1. Read instrument, timeframe and current price only from what is visible. If prices, timestamps or indicators are unreadable or cropped, set current_price to "UNREADABLE", decision to WAIT, and say INSUFFICIENT VISIBILITY in risk_reasoning. Never guess price points. Only use levels you can read from the price axis.
+2. Identify market phase (trending, ranging, consolidating/breakout), candle structure near major zones, horizontal support/resistance, patterns with invalidation levels.
+3. Check visible indicators (MAs, RSI, MACD, Bollinger, volume, VWAP), divergences, dynamic support/resistance. When several timeframes are given, state higher-timeframe bias first and require alignment.
+4. Decision is exactly one of BUY, SELL, WAIT. WAIT is mandatory if price is mid-range with no edge, if reward-to-risk is below 1:1.5, or if price action and indicators conflict.
+5. For BUY or SELL give a precise trigger, entry, a stop loss beyond a structural swing or key level (never arbitrary), and TP1 and TP2 at logical structure or Fibonacci extensions. Long: SL < entry < TP1 <= TP2. Short: SL > entry > TP1 >= TP2.
+6. If options are requested, state IV context (high or compressed) and propose a strategy (long call/put for directional momentum; bull put or bear call spread for range-bound or high-IV), with strike and expiry guidance.
+7. ALWAYS fill conditional_plan, even when the decision is WAIT: the best BUY or SELL setup that would become valid, with side, a precise trigger condition, and entry, stop loss, TP1 and TP2 read from the chart axis, so the user sees exact levels to watch.
+Respond with ONLY one JSON object, no prose, no markdown fences, exactly this shape (numbers as plain numbers, null where not applicable):
+{"chart_metadata":{"symbol":"","timeframe":"","trading_style":"","current_price":0},"technical_summary":{"trend":"Bullish|Bearish|Neutral","key_support":[0],"key_resistance":[0],"patterns_detected":[""],"indicator_signals":[""]},"decision":"BUY|SELL|WAIT","trade_plan":{"trade_trigger":"","entry_price":null,"stop_loss":null,"target_1":null,"target_2":null,"risk_reward_ratio":null,"calculated_position_size":null},"options_suggestion":{"recommended_strategy":"N/A","strikes_expiry_guidance":"N/A"},"risk_reasoning":"","conditional_plan":{"side":"BUY|SELL","trigger":"","entry_price":null,"stop_loss":null,"target_1":null,"target_2":null}}`;
+
+const num=v=>{if(v===null||v===undefined||v==="")return null;const n=parseFloat(String(v).replace(/[^0-9.\-]/g,""));return isFinite(n)?n:null};
+const fmt=(n,d=2)=>n===null||n===undefined?"–":Number(n).toLocaleString(undefined,{maximumFractionDigits:d});
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
+
+async function shrink(f){
+  const url=URL.createObjectURL(f);const img=new Image();
+  await new Promise((r,j)=>{img.onload=r;img.onerror=j;img.src=url});
+  const m=1800,s=Math.min(1,m/Math.max(img.width,img.height));
+  const c=document.createElement("canvas");c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);
+  c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+  const blob=await new Promise(r=>c.toBlob(r,"image/png"));
+  return{blob,url:c.toDataURL("image/jpeg",.5)};
+}
+async function addFiles(list){
+  for(const f of list){
+    if(!f.type.startsWith("image/")||files.length>=6)continue;
+    try{const s=await shrink(f);files.push(s)}catch(e){}
+  }
+  drawThumbs();
+}
+function drawThumbs(){
+  const t=$("thumbs");t.replaceChildren();
+  files.forEach((f,i)=>{const d=el("div","th"),im=new Image();im.src=f.url;const b=el("button","","×");
+    b.onclick=()=>{files.splice(i,1);drawThumbs()};d.append(im,b);t.append(d)});
+  $("go").disabled=!files.length||!sample;
+}
+$("drop").onclick=()=>$("file").click();
+$("file").onchange=e=>{addFiles(e.target.files);e.target.value=""};
+["dragover","dragenter"].forEach(n=>$("drop").addEventListener(n,e=>{e.preventDefault();$("drop").classList.add("on")}));
+["dragleave","drop"].forEach(n=>$("drop").addEventListener(n,e=>{e.preventDefault();$("drop").classList.remove("on")}));
+$("drop").addEventListener("drop",e=>addFiles(e.dataTransfer.files));
+document.addEventListener("paste",e=>{const fs=[...(e.clipboardData?.files||[])];if(fs.length)addFiles(fs)});
+
+(async()=>{
+  try{sample=await claude.use("sample")}catch(e){sample=null}
+  if(!sample){$("msg").textContent="Analysis needs the Claude viewer; open this page in claude.ai.";return}
+  try{const l=await sample.limits();if(!l.images){$("msg").textContent="Image input is not available in this view.";sample=null}}catch(e){}
+  drawThumbs();
+})();
+
+function validate(d,ctx){
+  const flags=[],tp=d.trade_plan||{};
+  const e=num(tp.entry_price),sl=num(tp.stop_loss),t1=num(tp.target_1),t2=num(tp.target_2);
+  const cp=num(d.chart_metadata?.current_price);
+  let dec=String(d.decision||"WAIT").toUpperCase().replace(/[^A-Z]/g,"");
+  if(!["BUY","SELL","WAIT"].includes(dec))dec="WAIT";
+  let rr=null,rr2=null,size=null;
+  if(d.chart_metadata?.current_price==="UNREADABLE"||cp===null&&dec!=="WAIT"){flags.push("Current price not readable; trade downgraded to WAIT.");dec="WAIT"}
+  if(dec!=="WAIT"){
+    if([e,sl,t1].some(v=>v===null)){flags.push("Entry, stop or target missing; downgraded to WAIT.");dec="WAIT"}
+    else{
+      const long=dec==="BUY";
+      const okSL=long?sl<e:sl>e,okT=long?t1>e&&(t2===null||t2>=t1):t1<e&&(t2===null||t2<=t1);
+      if(!okSL||!okT){flags.push("Level geometry is inconsistent with a "+(long?"long":"short")+" (stop/targets on the wrong side). Downgraded to WAIT.");dec="WAIT"}
+      else{
+        const risk=Math.abs(e-sl);rr=Math.abs(t1-e)/risk;rr2=t2!==null?Math.abs(t2-e)/risk:null;
+        if(rr<1.5){flags.push("Reward-to-risk to TP1 is 1:"+rr.toFixed(2)+", below the 1:1.5 minimum. Downgraded to WAIT.");dec="WAIT"}
+        if(cp!==null&&Math.abs(cp-e)/cp>0.05)flags.push("Entry is more than 5% from the current price. Confirm the trigger is realistic.");
+        if(ctx.cap&&ctx.risk){
+          const amt=ctx.cap*ctx.risk/100;const units=amt/risk;const notional=units*e;
+          size={amt,units,notional,over:notional>ctx.cap};
+          if(size.over)flags.push("Position value exceeds your capital, so it needs leverage or margin. Check your broker limits.");
+        }
+      }
+    }
+  }
+  return{dec,e,sl,t1,t2,cp,rr,rr2,size,flags};
+}
+
+function ladder(d,v,cur){
+  const box=el("div","lad");const ts=d.technical_summary||{};
+  const rows=[];
+  (ts.key_resistance||[]).forEach(x=>{const n=num(x);if(n!==null)rows.push([n,"r","Resistance"])});
+  (ts.key_support||[]).forEach(x=>{const n=num(x);if(n!==null)rows.push([n,"s","Support"])});
+  if(v.cp!==null)rows.push([v.cp,"p","Price now"]);
+  if(v.dec!=="WAIT"){rows.push([v.e,"e","Entry"],[v.sl,"e","Stop loss"],[v.t1,"e","TP1"]);if(v.t2!==null)rows.push([v.t2,"e","TP2"])}
+  rows.sort((a,b)=>b[0]-a[0]).forEach(r=>{const x=el("div","lvl "+r[1]);x.append(el("span","",r[2]),el("span","",fmt(r[0],4)));box.append(x)});
+  return box;
+}
+
+function condCard(d,ctx){
+  const c=d.conditional_plan||{},tp=d.trade_plan||{};
+  const src=num(c.entry_price)!==null?c:tp;
+  const e=num(src.entry_price),sl=num(src.stop_loss),t1=num(src.target_1),t2=num(src.target_2);
+  let side=String(c.side||d.decision||"").toUpperCase().replace(/[^A-Z]/g,"");
+  if(!(side==="BUY"||side==="SELL"))side=(e!==null&&sl!==null)?(sl<e?"BUY":"SELL"):null;
+  if(!side||e===null||sl===null||t1===null)return null;
+  const long=side==="BUY",ok=long?(sl<e&&t1>e):(sl>e&&t1<e);
+  const risk=Math.abs(e-sl),rr=Math.abs(t1-e)/risk,rr2=t2!==null?Math.abs(t2-e)/risk:null;
+  const card=el("div","card");card.append(el("h2","","If-then setup · NOT active"));
+  const hd=el("span","badge "+side,side);hd.style.fontSize="15px";card.append(hd);
+  card.append(el("p","","Only act if this happens: "+(src.trigger||c.trigger||tp.trade_trigger||"price confirms at the entry zone")));
+  const g=el("div","kv");
+  const items=[["Entry",fmt(e,4)],["Stop loss",fmt(sl,4)],["TP1",fmt(t1,4)],["TP2",t2!==null?fmt(t2,4):"–"],["R:R to TP1","1 : "+rr.toFixed(2)],["R:R to TP2",rr2!==null?"1 : "+rr2.toFixed(2):"–"]];
+  if(ctx.cap&&ctx.risk){const amt=ctx.cap*ctx.risk/100,u=amt/risk;items.push(["Risk amount",ctx.cur+fmt(amt)],["Position size",fmt(u,4)+" units"],["Position value",ctx.cur+fmt(u*e)])}
+  items.forEach(([k,x])=>{const q=el("div");q.append(el("b","",k),el("span","",x));g.append(q)});
+  card.append(g);
+  if(!ok)card.append(el("div","flag","These levels are inconsistent for a "+(long?"long":"short")+". Do not use them."));
+  else if(rr<1.5)card.append(el("div","flag","Reward-to-risk is below 1:1.5, so this is a skip unless price offers a better entry."));
+  else card.append(el("div","flag","Levels pass the geometry and 1:1.5 checks, but the trigger has not fired yet."));
+  return card;
+}
+function render(d,ctx){
+  const v=validate(d,ctx),out=$("out");out.replaceChildren();
+  const m=d.chart_metadata||{},ts=d.technical_summary||{},tp=d.trade_plan||{},op=d.options_suggestion||{};
+  const top=el("div","card");
+  top.append(el("h2","","Decision"));
+  const b=el("span","badge "+v.dec,v.dec==="WAIT"?"WAIT / NO TRADE":v.dec);top.append(b);
+  if(String(d.decision||"").toUpperCase()!==v.dec&&v.dec==="WAIT")top.append(el("span","mut"," (model said "+d.decision+")"));
+  const kv=el("div","kv");kv.style.marginTop="12px";
+  [["Symbol",m.symbol],["Timeframe",m.timeframe],["Style",m.trading_style||ctx.style],["Price",v.cp!==null?fmt(v.cp,4):"Unreadable"],["Trend",ts.trend]].forEach(([k,x])=>{const c=el("div");c.append(el("b","",k),el("span","",x||"–"));kv.append(c)});
+  top.append(kv);
+  v.flags.forEach(f=>top.append(el("div","flag",f)));
+  out.append(top);
+
+  const lv=el("div","card");lv.append(el("h2","","Levels"),ladder(d,v,ctx.cur));out.append(lv);
+
+  if(v.dec!=="WAIT"){
+    const pl=el("div","card");pl.append(el("h2","","Trade plan"));
+    pl.append(el("p","",tp.trade_trigger||""));
+    const g=el("div","kv");
+    const items=[["Entry",fmt(v.e,4)],["Stop loss",fmt(v.sl,4)],["TP1",fmt(v.t1,4)],["TP2",v.t2!==null?fmt(v.t2,4):"–"],["R:R to TP1","1 : "+v.rr.toFixed(2)],["R:R to TP2",v.rr2!==null?"1 : "+v.rr2.toFixed(2):"–"]];
+    if(v.size){items.push(["Risk amount",ctx.cur+fmt(v.size.amt)],["Position size",fmt(v.size.units,4)+" units"],["Position value",ctx.cur+fmt(v.size.notional)])}
+    items.forEach(([k,x])=>{const c=el("div");c.append(el("b","",k),el("span","",x));g.append(c)});
+    pl.append(g);
+    if(v.size)pl.append(el("p","mut","Size = (capital × risk %) ÷ |entry − stop|, computed here, not by the model. Round down to your instrument’s lot size."));
+    else pl.append(el("p","mut","Enter capital to get position sizing."));
+    out.append(pl);
+  }
+
+  if(v.dec==="WAIT"){const cc=condCard(d,ctx);if(cc)out.append(cc)}
+  const an=el("div","card");an.append(el("h2","","Analysis"));
+  const add=(t,arr)=>{if(!arr||!arr.length)return;an.append(el("div","mut",t));const w=el("div");arr.forEach(x=>w.append(el("span","tag",String(x))));an.append(w)};
+  add("Patterns",ts.patterns_detected);add("Indicator signals",ts.indicator_signals);
+  an.append(el("p","",d.risk_reasoning||""));out.append(an);
+
+  if(ctx.opt&&op&&op.recommended_strategy&&op.recommended_strategy!=="N/A"){
+    const oc=el("div","card");oc.append(el("h2","","Options"),el("p","",op.recommended_strategy),el("p","mut",op.strikes_expiry_guidance||""));
+    if(v.dec==="WAIT")oc.append(el("div","flag","Decision is WAIT, so treat this as a conditional idea, not a signal."));
+    out.append(oc);
+  }
+  const act=el("div","card");const cb=el("button","btn sec","Copy JSON");
+  cb.onclick=()=>{navigator.clipboard?.writeText(JSON.stringify(d,null,2)).then(()=>cb.textContent="Copied")};
+  act.append(cb);out.append(act);
+}
+
+$("go").onclick=async()=>{
+  const ctx={cap:num($("cap").value),risk:num($("risk").value),cur:$("cur").value,style:$("style").value,sector:$("sector").value,tf:$("tf").value,opt:$("opt").checked};
+  const btn=$("go");btn.disabled=true;btn.textContent="Analyzing…";$("msg").textContent="";
+  $("out").replaceChildren(el("div","card mut","Reading charts…"));
+  const prompt=SYS+"\n\nUSER CONTEXT: Sector: "+ctx.sector+". Trading style: "+ctx.style+". Timeframe hint: "+(ctx.tf||"read from chart")+". Options requested: "+(ctx.opt?"yes":"no")+". Screenshots attached: "+files.length+(files.length>1?" (treat as multi-timeframe views; list the timeframe of each)":"")+". Do not compute position size; set calculated_position_size to null.";
+  try{
+    const r=await sample(prompt,{images:files.map(f=>f.blob),modelTier:"complex",cache:false});
+    let t=(r.text||"").replace(/```json|```/g,"").trim();
+    const a=t.indexOf("{"),z=t.lastIndexOf("}");
+    if(a<0||z<0)throw{message:"The model did not return JSON.",text:t};
+    render(JSON.parse(t.slice(a,z+1)),ctx);
+  }catch(e){
+    const box=el("div","err");box.append(el("b","",e.code==="rate_limited"?"Rate limited. Wait a minute and retry.":e.code==="not_granted"?"Permission to use Claude was not granted.":"Analysis failed: "+(e.message||"unknown error")));
+    if(e.text)box.append(el("pre","",e.text.slice(0,1500)));
+    $("out").replaceChildren(box);
+  }finally{btn.disabled=!files.length;btn.textContent="Analyze charts"}
+};
+</script>
+</body>
+</html>
